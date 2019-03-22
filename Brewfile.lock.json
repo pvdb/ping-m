@@ -1,0 +1,106 @@
+{
+  "entries": {
+    "brew": {
+      "telegraf": {
+        "version": "1.14.3",
+        "bottle": {
+          "cellar": ":any_skip_relocation",
+          "prefix": "/usr/local",
+          "files": {
+            "catalina": {
+              "url": "https://homebrew.bintray.com/bottles/telegraf-1.14.3.catalina.bottle.tar.gz",
+              "sha256": "b76fdfb13c1fc4466bf21c4df8d0cf307b09499ecd766b48d4084c30f7e6a3f2"
+            },
+            "mojave": {
+              "url": "https://homebrew.bintray.com/bottles/telegraf-1.14.3.mojave.bottle.tar.gz",
+              "sha256": "83c18e93dd186262b53e610ae50252db778e9e10630eda3457f3c5a589c625ac"
+            },
+            "high_sierra": {
+              "url": "https://homebrew.bintray.com/bottles/telegraf-1.14.3.high_sierra.bottle.tar.gz",
+              "sha256": "3c3b9977be73f353dc05aae9cda91164a774ec14f0542e17ce1cc1f8f073541e"
+            }
+          }
+        }
+      },
+      "influxdb": {
+        "version": "1.8.0",
+        "bottle": {
+          "cellar": ":any_skip_relocation",
+          "prefix": "/usr/local",
+          "files": {
+            "catalina": {
+              "url": "https://homebrew.bintray.com/bottles/influxdb-1.8.0.catalina.bottle.tar.gz",
+              "sha256": "79c4ceedc4829159bafc592b9363e33719ecbd105c681db0d49217a5d276e354"
+            },
+            "mojave": {
+              "url": "https://homebrew.bintray.com/bottles/influxdb-1.8.0.mojave.bottle.tar.gz",
+              "sha256": "6393249a983631cde5bb524dfbf2f92c3b53e5984e88082ea38d157db54d32ad"
+            },
+            "high_sierra": {
+              "url": "https://homebrew.bintray.com/bottles/influxdb-1.8.0.high_sierra.bottle.tar.gz",
+              "sha256": "7c8070708d95ed863c5fc37eefed541624410feb58ec3d20cc46f349528d9e8a"
+            }
+          }
+        }
+      },
+      "grafana": {
+        "version": "7.0.3",
+        "bottle": {
+          "cellar": ":any_skip_relocation",
+          "prefix": "/usr/local",
+          "files": {
+            "catalina": {
+              "url": "https://homebrew.bintray.com/bottles/grafana-7.0.3.catalina.bottle.tar.gz",
+              "sha256": "0bd2694654adab2e88afdfe7d9003cc49d61ab977e0b397b87d10a074a34d269"
+            },
+            "mojave": {
+              "url": "https://homebrew.bintray.com/bottles/grafana-7.0.3.mojave.bottle.tar.gz",
+              "sha256": "d5bfa7c4d4aef427a9ab25427a253d570f05cac92d512d92d7e97e8a43bababd"
+            },
+            "high_sierra": {
+              "url": "https://homebrew.bintray.com/bottles/grafana-7.0.3.high_sierra.bottle.tar.gz",
+              "sha256": "363ec531650562b72507178d86c99899003a4ba44f0bc779870b7b763c49af6e"
+            }
+          }
+        }
+      },
+      "jq": {
+        "version": "1.6",
+        "bottle": {
+          "cellar": ":any",
+          "prefix": "/usr/local",
+          "files": {
+            "catalina": {
+              "url": "https://homebrew.bintray.com/bottles/jq-1.6.catalina.bottle.1.tar.gz",
+              "sha256": "820a3c85fcbb63088b160c7edf125d7e55fc2c5c1d51569304499c9cc4b89ce8"
+            },
+            "mojave": {
+              "url": "https://homebrew.bintray.com/bottles/jq-1.6.mojave.bottle.1.tar.gz",
+              "sha256": "71f0e76c5b22e5088426c971d5e795fe67abee7af6c2c4ae0cf4c0eb98ed21ff"
+            },
+            "high_sierra": {
+              "url": "https://homebrew.bintray.com/bottles/jq-1.6.high_sierra.bottle.1.tar.gz",
+              "sha256": "dffcffa4ea13e8f0f2b45c5121e529077e135ae9a47254c32182231662ee9b72"
+            },
+            "sierra": {
+              "url": "https://homebrew.bintray.com/bottles/jq-1.6.sierra.bottle.1.tar.gz",
+              "sha256": "bb4d19dc026c2d72c53eed78eaa0ab982e9fcad2cd2acc6d13e7a12ff658e877"
+            }
+          }
+        }
+      }
+    }
+  },
+  "system": {
+    "macos": {
+      "mojave": {
+        "HOMEBREW_VERSION": "2.3.0",
+        "HOMEBREW_PREFIX": "/usr/local",
+        "Homebrew/homebrew-core": "a74ad2f414355e84c3df837415427ba7ae5859f0",
+        "CLT": "10.3.0.0.1.1562985497",
+        "Xcode": "11.3.1",
+        "macOS": "10.14.6"
+      }
+    }
+  }
+}

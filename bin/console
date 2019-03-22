@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'ping-m'
+
+require 'pry'
+Pry.start
+
+# That's all Folks!

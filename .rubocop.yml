@@ -1,0 +1,62 @@
+require:
+  - rubocop-minitest
+  - rubocop-rake
+
+#
+# enable so-called "pending cops"
+# after "minor" RuboCop upgrades!
+#
+# https://docs.rubocop.org/en/latest/versioning/#pending-cops
+#
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+
+Lint/NestedPercentLiteral:
+  Enabled: false
+Lint/UselessConstantScoping:
+  Enabled: false
+
+Layout/HashAlignment:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+
+Minitest/MultipleAssertions:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  Enabled: false
+Style/AccessorGrouping:
+  Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/EmptyCaseCondition:
+  Enabled: false
+Style/HashSyntax:
+  Enabled: true
+  EnforcedShorthandSyntax: 'either'
+Style/OpenStructUse:
+  Enabled: false
+Style/ParallelAssignment:
+  Enabled: false
+Style/Semicolon:
+  Enabled: true
+  AllowAsExpressionSeparator: true
+Style/TrailingCommaInArguments:
+  Enabled: false
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+Style/TrailingCommaInHashLiteral:
+  Enabled: false

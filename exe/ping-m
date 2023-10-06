@@ -1,0 +1,145 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+lib = File.expand_path('../lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+require 'English'
+require 'io/console'
+
+if $stdin.tty?
+  require 'shellwords'
+  require 'ext/ipaddr'
+
+  # https://blog.cloudflare.com/dns-resolver-1-1-1-1/
+  CLOUDFLARE = %w[1.0.0.1 1.1.1.1].freeze
+
+  # https://developers.google.com/speed/public-dns/
+  GOOGLE = %w[8.8.4.4 8.8.8.8].freeze
+
+  # https://use.opendns.com/
+  OPENDNS = %w[208.67.222.222 208.67.222.220].freeze
+
+  public_dns_server = if ARGV.delete('--cloudflare')
+                        CLOUDFLARE.sample
+                      elsif ARGV.delete('--google')
+                        GOOGLE.sample
+                      elsif ARGV.delete('--opendns')
+                        OPENDNS.sample
+                      elsif ARGV.delete('--random')
+                        (CLOUDFLARE + GOOGLE + OPENDNS).sample
+                      elsif ARGV.delete('--private')
+                        private_network # broadcast to 192.168.0.0
+                      elsif ARGV.delete('--gateway')
+                        default_gateway # most likely 192.168.0.1
+                      end
+
+  ping_m_argv = []
+  ping_m_argv << ARGV.delete('--jq')      # pretty-print final stats using jq
+  ping_m_argv << ARGV.delete('--json')    # print final JSON stats to $stdout
+  ping_m_argv << ARGV.delete('--pbcopy')  # copy final stats to pasteboard
+  ping_m_argv << ARGV.delete('--debug')   # print ping input
+  ping_m_argv << ARGV.delete('--stats')   # print running stats as JSON
+  ping_m_argv << ARGV.delete('--notify')  # alert via the Notification Centre
+  ping_m_argv << ARGV.delete('--capture') # print RTT details to $stdout
+  ping_m_argv.compact!
+
+  if (ping_argv = ARGV).empty?
+    case RUBY_PLATFORM
+    when /darwin/i
+      ping_argv.push('-Q', '-n')
+      ping_argv.push('--apple-time')
+    when /linux/i
+      ping_argv.push('-n')
+      # ping_argv.push('-D') # similar to --apple-time
+    when /mingw|mswin/i
+      ping_argv.push('-a', '-t')
+    end
+  end
+  ping_argv.push(public_dns_server) if public_dns_server
+
+  ping_cmd = "ping #{Shellwords.join(ping_argv)}"
+  ping_m_cmd = "ruby #{__FILE__} #{Shellwords.join(ping_m_argv)}"
+
+  # TZ=UTC ensures --apple_time prints UTC timestamps
+  ping_cmd = "TZ=UTC #{ping_cmd}" if ping_cmd.include?('--apple-time')
+
+  ping_pipeline = "(#{ping_cmd} 2>&1)|#{ping_m_cmd}"
+  IO.console.puts("INFO: running `#{ping_pipeline}`")
+
+  ENV['PING-M'] = $PID.to_s
+  exec(ping_pipeline)
+end
+
+# re-entrant now
+require 'ping_m'
+
+options = {
+  jq:   ARGV.delete('--jq'),
+  json: ARGV.delete('--json'),
+  pb:   ARGV.delete('--pbcopy'),
+}
+
+(RAINBOW = Rainbow.new).enabled = true
+
+monitor = Ping::Monitor.new
+
+if Signal.list.include?('INFO')
+  Signal.trap('INFO') do
+    escaped_json = JSON.escape(monitor.speed_stats.to_json)
+    IO.console.puts `jq -C <<< '#{escaped_json}'`.chomp
+  end
+
+  info_cmd = "INFO: use `kill -INFO #{$PID}` for intermediate stats"
+  IO.console.puts(info_cmd)
+end
+
+processors = [
+  Ping::ConsoleProcessor.new(monitor)
+]
+
+case
+when ARGV.delete('--debug')
+  processors << Ping::DebugProcessor.new(monitor)
+when ARGV.delete('--stats')
+  processors << Ping::StatsProcessor.new(monitor)
+when ARGV.delete('--notify')
+  processors << Ping::NotifyProcessor.new(monitor)
+when ARGV.delete('--capture')
+  processors << Ping::CaptureProcessor.new(monitor)
+end
+
+$stdout.sync = true
+IO.console.sync = true
+
+begin
+  while (line = ARGF.readline&.chomp!)
+    next if line.empty?
+
+    if (response = monitor.process(line))
+      processors.each_with_object(response).each(&:process)
+    elsif (ignored = monitor.last_line_ignored)
+      IO.console.puts RAINBOW.wrap(ignored).blue
+    elsif (processed = monitor.last_line_processed)
+      IO.console.puts RAINBOW.wrap(processed).blue
+    end
+  end
+rescue Interrupt, EOFError
+  IO.console.puts # deal with ^C & ^D
+  # ignore these exceptions to ensure
+  # a clean exit from Unix pipelines!
+rescue StandardError
+  IO.console.puts "last line: #{line}"
+  raise
+end
+
+case
+when options[:json]
+  IO.console.puts monitor.to_json
+when options[:jq]
+  IO.write('|jq >/dev/tty', monitor.to_json)
+when options[:pb]
+  IO.write('|pbcopy', monitor.to_json)
+end
+
+# That's all Folks!
